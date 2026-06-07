@@ -28,7 +28,7 @@ After downloading:
 
 1. Unzip the app
 2. Move it to Applications
-3. Start VolumeHelper
+3. Start it from app folder (it has no autostart, i dont like autostart apps haha)
 
 ## Development
 
