@@ -45,7 +45,7 @@ final class MenuController: NSObject, NSMenuDelegate {
         addSlider(title: "Input Volume", direction: .input)
         addSlider(title: "Output Volume", direction: .output)
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "Refresh", action: #selector(refresh), keyEquivalent: "r", target: self))
+        //menu.addItem(NSMenuItem(title: "Refresh", action: #selector(refresh), keyEquivalent: "r", target: self))
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q", target: self))
     }
 

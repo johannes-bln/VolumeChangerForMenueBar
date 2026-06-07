@@ -1,4 +1,3 @@
-// !$*UTF8*$!
 {
 	archiveVersion = 1;
 	classes = {
@@ -270,7 +269,7 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = VolumeHelper/Info.plist;
+				INFOPLIST_FILE = VolumeChangerForMenueBar/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -296,7 +295,7 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = VolumeHelper/Info.plist;
+				INFOPLIST_FILE = VolumeChangerForMenueBar/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

@@ -40,7 +40,7 @@ final class SliderMenuItem: NSMenuItem {
 
 final class SliderRowView: NSView {
     init(title: String, slider: NSSlider, valueLabel: NSTextField) {
-        super.init(frame: NSRect(x: 0, y: 0, width: 260, height: 54))
+        super.init(frame: NSRect(x: 0, y: 0, width: 320, height: 54))
 
         let titleLabel = NSTextField(labelWithString: title)
         titleLabel.font = .systemFont(ofSize: 13)
@@ -65,8 +65,8 @@ final class SliderRowView: NSView {
         addSubview(stack)
 
         NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
+            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             stack.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
             slider.widthAnchor.constraint(equalTo: stack.widthAnchor)

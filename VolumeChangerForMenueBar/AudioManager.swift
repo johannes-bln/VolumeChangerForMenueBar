@@ -160,6 +160,10 @@ final class AudioManager {
     }
 
     private func volume(for deviceID: AudioDeviceID, direction: AudioDirection) -> Float? {
+        if isMuted(deviceID, direction: direction) == true {
+            return 0
+        }
+
         if let value = readVolume(deviceID, direction: direction, element: kAudioObjectPropertyElementMain) {
             return value
         }
@@ -178,14 +182,27 @@ final class AudioManager {
     private func setVolume(_ value: Float, for deviceID: AudioDeviceID, direction: AudioDirection) -> Bool {
         let level = min(max(value, 0), 1)
 
-        if writeVolume(level, deviceID: deviceID, direction: direction, element: kAudioObjectPropertyElementMain) {
+        if level <= 0 {
+            let volumeChanged = writeVolumeLevel(level, deviceID: deviceID, direction: direction)
+            let muteChanged = setMute(true, deviceID: deviceID, direction: direction)
+            return volumeChanged || muteChanged
+        }
+
+        let muteChanged = setMute(false, deviceID: deviceID, direction: direction)
+        let volumeChanged = writeVolumeLevel(level, deviceID: deviceID, direction: direction)
+
+        return volumeChanged || muteChanged
+    }
+
+    private func writeVolumeLevel(_ value: Float, deviceID: AudioDeviceID, direction: AudioDirection) -> Bool {
+        if writeVolume(value, deviceID: deviceID, direction: direction, element: kAudioObjectPropertyElementMain) {
             return true
         }
 
         var changed = false
 
         for channel in channels(for: deviceID, direction: direction) {
-            if writeVolume(level, deviceID: deviceID, direction: direction, element: channel) {
+            if writeVolume(value, deviceID: deviceID, direction: direction, element: channel) {
                 changed = true
             }
         }
@@ -224,6 +241,71 @@ final class AudioManager {
         }
 
         return AudioObjectSetPropertyData(deviceID, &address, 0, nil, size, &level) == noErr
+    }
+
+    private func isMuted(_ deviceID: AudioDeviceID, direction: AudioDirection) -> Bool? {
+        if let muted = readMute(deviceID, direction: direction, element: kAudioObjectPropertyElementMain) {
+            return muted
+        }
+
+        let values = channels(for: deviceID, direction: direction).compactMap { channel in
+            readMute(deviceID, direction: direction, element: channel)
+        }
+
+        guard values.isEmpty == false else {
+            return nil
+        }
+
+        return values.contains(true)
+    }
+
+    private func setMute(_ muted: Bool, deviceID: AudioDeviceID, direction: AudioDirection) -> Bool {
+        if writeMute(muted, deviceID: deviceID, direction: direction, element: kAudioObjectPropertyElementMain) {
+            return true
+        }
+
+        var changed = false
+
+        for channel in channels(for: deviceID, direction: direction) {
+            if writeMute(muted, deviceID: deviceID, direction: direction, element: channel) {
+                changed = true
+            }
+        }
+
+        return changed
+    }
+
+    private func readMute(_ deviceID: AudioDeviceID, direction: AudioDirection, element: AudioObjectPropertyElement) -> Bool? {
+        var address = propertyAddress(kAudioDevicePropertyMute, direction.scope, element)
+        var value = UInt32(0)
+        var size = UInt32(MemoryLayout<UInt32>.stride)
+
+        guard AudioObjectHasProperty(deviceID, &address) else {
+            return nil
+        }
+
+        guard AudioObjectGetPropertyData(deviceID, &address, 0, nil, &size, &value) == noErr else {
+            return nil
+        }
+
+        return value != 0
+    }
+
+    private func writeMute(_ muted: Bool, deviceID: AudioDeviceID, direction: AudioDirection, element: AudioObjectPropertyElement) -> Bool {
+        var address = propertyAddress(kAudioDevicePropertyMute, direction.scope, element)
+        var writable = DarwinBoolean(false)
+        var value = muted ? UInt32(1) : UInt32(0)
+        let size = UInt32(MemoryLayout<UInt32>.stride)
+
+        guard AudioObjectHasProperty(deviceID, &address) else {
+            return false
+        }
+
+        guard AudioObjectIsPropertySettable(deviceID, &address, &writable) == noErr, writable.boolValue else {
+            return false
+        }
+
+        return AudioObjectSetPropertyData(deviceID, &address, 0, nil, size, &value) == noErr
     }
 
     private func channels(for deviceID: AudioDeviceID, direction: AudioDirection) -> [AudioObjectPropertyElement] {
