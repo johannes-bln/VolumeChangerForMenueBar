@@ -45,7 +45,6 @@ final class MenuController: NSObject, NSMenuDelegate {
         addSlider(title: "Input Volume", direction: .input)
         addSlider(title: "Output Volume", direction: .output)
         menu.addItem(.separator())
-        //menu.addItem(NSMenuItem(title: "Refresh", action: #selector(refresh), keyEquivalent: "r", target: self))
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q", target: self))
     }
 
@@ -65,17 +64,14 @@ final class MenuController: NSObject, NSMenuDelegate {
         }
 
         for device in devices {
-            let deviceItem = NSMenuItem(
+            let item = DeviceMenuItem(
                 title: device.name,
-                action: direction == .input ? #selector(selectInputDevice) : #selector(selectOutputDevice),
-                keyEquivalent: ""
-            )
+                isSelected: device.id == selectedDeviceID
+            ) { [weak self] in
+                self?.selectDevice(device.id, direction: direction)
+            }
 
-            deviceItem.target = self
-            deviceItem.representedObject = NSNumber(value: device.id)
-            deviceItem.state = device.id == selectedDeviceID ? .on : .off
-            deviceItem.indentationLevel = 1
-            menu.addItem(deviceItem)
+            menu.addItem(item)
         }
     }
 
@@ -91,6 +87,7 @@ final class MenuController: NSObject, NSMenuDelegate {
 
     private func updateIcon() {
         let level = audio.volume(for: .output) ?? 0
+        let percent = Int(round(Double(level * 100)))
         let symbolName: String
 
         if level <= 0.01 {
@@ -106,42 +103,22 @@ final class MenuController: NSObject, NSMenuDelegate {
         let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: "VolumeHelper")
         image?.isTemplate = true
         statusItem.button?.image = image
+        statusItem.button?.toolTip = "Output Volume: \(percent) %"
     }
 
-    @objc private func selectInputDevice(_ sender: NSMenuItem) {
-        guard let deviceID = deviceID(from: sender) else {
-            return
+    private func selectDevice(_ deviceID: AudioDeviceID, direction: AudioDirection) {
+        audio.setDefaultDevice(deviceID, for: direction)
+
+        if direction == .output {
+            updateIcon()
         }
 
-        audio.setDefaultDevice(deviceID, for: .input)
+        menu.cancelTracking()
         rebuildMenu()
-    }
-
-    @objc private func selectOutputDevice(_ sender: NSMenuItem) {
-        guard let deviceID = deviceID(from: sender) else {
-            return
-        }
-
-        audio.setDefaultDevice(deviceID, for: .output)
-        rebuildMenu()
-        updateIcon()
-    }
-
-    @objc private func refresh() {
-        rebuildMenu()
-        updateIcon()
     }
 
     @objc private func quit() {
         NSApplication.shared.terminate(nil)
-    }
-
-    private func deviceID(from item: NSMenuItem) -> AudioDeviceID? {
-        guard let number = item.representedObject as? NSNumber else {
-            return nil
-        }
-
-        return AudioDeviceID(number.uint32Value)
     }
 }
 
