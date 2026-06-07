@@ -34,3 +34,11 @@ After downloading:
 
 Open the project in Xcode and run the `VolumeChangerForMenueBar` target.
 
+
+
+### TODO: 
+- smooth animations
+- design improvements
+- keyboard shortcuts
+
+
