@@ -16,12 +16,12 @@ final class MenuController: NSObject, NSMenuDelegate {
         menu.delegate = self
         statusItem.menu = menu
         statusItem.button?.imagePosition = .imageOnly
-        statusItem.button?.toolTip = "VolumeHelper"
+        statusItem.button?.toolTip = "VolumeChangerForMenueBar"
 
         updateIcon()
         rebuildMenu()
 
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+        refreshTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             self?.updateIcon()
         }
     }
@@ -86,7 +86,7 @@ final class MenuController: NSObject, NSMenuDelegate {
         menu.addItem(item)
     }
 
-    private func updateIcon() { 
+    private func updateIcon() {
         let level = audio.volume(for: .output) ?? 0
         let percent = Int(round(Double(level * 100)))
         let symbolName: String
