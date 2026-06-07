@@ -15,7 +15,7 @@ That way, simple audio changes do not require opening System Settings.
 
 ## Download
 
-The finished app is provided as a release.
+The finished app is provided as a release. (The app is distributed as a notarized release.)
 
 After downloading:
 
