@@ -1,5 +1,7 @@
 # VolumeHelper
 
+<img width="629" height="510" alt="image" src="https://github.com/user-attachments/assets/2e592de7-11cf-4ab4-8f81-b07546632299" />
+
 VolumeHelper is a small macOS menu bar app.
 
 It lets you change the most common audio settings directly from the menu bar:
