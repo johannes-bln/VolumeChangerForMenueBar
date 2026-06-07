@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		4A1F14AC2C90010000A10001 /* VolumeHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VolumeHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A1F14AC2C90010000A10001 /* VolumeChangerForMenueBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VolumeChangerForMenueBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -16,12 +16,12 @@
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 4A1F14B52C90010000A10001 /* VolumeHelper */;
+			target = 4A1F14B52C90010000A10001 /* VolumeChangerForMenueBar */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		8F2E2A742FD5775800410EE8 /* VolumeHelper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8F2E2A7B2FD5775900410EE8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = VolumeHelper; sourceTree = "<group>"; };
+		8F2E2A742FD5775800410EE8 /* VolumeChangerForMenueBar */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8F2E2A7B2FD5775900410EE8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = VolumeChangerForMenueBar; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,7 +38,7 @@
 		4A1F14B22C90010000A10001 = {
 			isa = PBXGroup;
 			children = (
-				8F2E2A742FD5775800410EE8 /* VolumeHelper */,
+				8F2E2A742FD5775800410EE8 /* VolumeChangerForMenueBar */,
 				4A1F14B42C90010000A10001 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,7 +46,7 @@
 		4A1F14B42C90010000A10001 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4A1F14AC2C90010000A10001 /* VolumeHelper.app */,
+				4A1F14AC2C90010000A10001 /* VolumeChangerForMenueBar.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -54,9 +54,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4A1F14B52C90010000A10001 /* VolumeHelper */ = {
+		4A1F14B52C90010000A10001 /* VolumeChangerForMenueBar */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4A1F14B92C90010000A10001 /* Build configuration list for PBXNativeTarget "VolumeHelper" */;
+			buildConfigurationList = 4A1F14B92C90010000A10001 /* Build configuration list for PBXNativeTarget "VolumeChangerForMenueBar" */;
 			buildPhases = (
 				4A1F14B62C90010000A10001 /* Sources */,
 				4A1F14B72C90010000A10001 /* Frameworks */,
@@ -67,11 +67,11 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				8F2E2A742FD5775800410EE8 /* VolumeHelper */,
+				8F2E2A742FD5775800410EE8 /* VolumeChangerForMenueBar */,
 			);
-			name = VolumeHelper;
+			name = VolumeChangerForMenueBar;
 			productName = VolumeHelper;
-			productReference = 4A1F14AC2C90010000A10001 /* VolumeHelper.app */;
+			productReference = 4A1F14AC2C90010000A10001 /* VolumeChangerForMenueBar.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -89,7 +89,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 4A1F14BE2C90010000A10001 /* Build configuration list for PBXProject "VolumeHelper" */;
+			buildConfigurationList = 4A1F14BE2C90010000A10001 /* Build configuration list for PBXProject "VolumeChangerForMenueBar" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -103,7 +103,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4A1F14B52C90010000A10001 /* VolumeHelper */,
+				4A1F14B52C90010000A10001 /* VolumeChangerForMenueBar */,
 			);
 		};
 /* End PBXProject section */
@@ -276,7 +276,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.johannes.VolumeHelper;
+				PRODUCT_BUNDLE_IDENTIFIER = "de.johannes-bln.VolumeChangerForMenueBar";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = macosx;
@@ -302,7 +302,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.johannes.VolumeHelper;
+				PRODUCT_BUNDLE_IDENTIFIER = "de.johannes-bln.VolumeChangerForMenueBar";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = macosx;
@@ -313,7 +313,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4A1F14B92C90010000A10001 /* Build configuration list for PBXNativeTarget "VolumeHelper" */ = {
+		4A1F14B92C90010000A10001 /* Build configuration list for PBXNativeTarget "VolumeChangerForMenueBar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4A1F14BC2C90010000A10001 /* Debug */,
@@ -322,7 +322,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4A1F14BE2C90010000A10001 /* Build configuration list for PBXProject "VolumeHelper" */ = {
+		4A1F14BE2C90010000A10001 /* Build configuration list for PBXProject "VolumeChangerForMenueBar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4A1F14BA2C90010000A10001 /* Debug */,
