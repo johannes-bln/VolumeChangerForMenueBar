@@ -45,6 +45,7 @@ final class MenuController: NSObject, NSMenuDelegate {
         addSlider(title: "Input Volume", direction: .input)
         addSlider(title: "Output Volume", direction: .output)
         menu.addItem(.separator())
+        menu.addItem(NSMenuItem(title: "About", action: #selector(openAbountWebpage), keyEquivalent: "i", target: self))
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q", target: self))
     }
 
@@ -85,7 +86,7 @@ final class MenuController: NSObject, NSMenuDelegate {
         menu.addItem(item)
     }
 
-    private func updateIcon() {
+    private func updateIcon() { 
         let level = audio.volume(for: .output) ?? 0
         let percent = Int(round(Double(level * 100)))
         let symbolName: String
@@ -117,6 +118,10 @@ final class MenuController: NSObject, NSMenuDelegate {
         rebuildMenu()
     }
 
+    @objc private func openAbountWebpage() {
+        NSWorkspace.shared.open(URL(string: "https://github.com/johannes-bln/VolumeChangerForMenueBar")!)
+    }
+    
     @objc private func quit() {
         NSApplication.shared.terminate(nil)
     }
