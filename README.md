@@ -42,3 +42,4 @@ Open the project in Xcode and run the `VolumeChangerForMenueBar` target.
 - keyboard shortcuts
 
 
+Written in AppKit and Cocoa :) - it doesn't have a “real” interface.
