@@ -3,8 +3,8 @@
 Why? It's more simple and faster in dayli work :)
 
 <br>
-<a href="https://github.com/johannes-bln/VolumeChangerForMenueBar/releases/download/1.1/VolumeChangerForMenueBar-1.1.zip">
-  <img src="https://img.shields.io/badge/Download-macOS%20App-blue?style=for-the-badge&logo=apple" alt="Download macOS App (Version 1.1)">
+<a href="https://github.com/johannes-bln/VolumeChangerForMenueBar/releases/">
+  <img src="https://img.shields.io/badge/Download-macOS%20App-blue?style=for-the-badge&logo=apple" alt="Download macOS App">
 </a>
 <br>
 <img width="476" height="499" alt="image" src="https://github.com/user-attachments/assets/98efcbca-81b2-4305-8019-2707febf6433" />
