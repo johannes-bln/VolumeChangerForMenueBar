@@ -88,23 +88,62 @@ final class MenuController: NSObject, NSMenuDelegate {
 
     private func updateIcon() {
         let level = audio.volume(for: .output) ?? 0
+        let inputLevel = audio.volume(for: .input) ?? 0
+
         let percent = Int(round(Double(level * 100)))
+
         let symbolName: String
 
         if level <= 0.01 {
-            symbolName = "speaker.slash"
+            symbolName = "speaker.slash.fill"
         } else if level < 0.34 {
-            symbolName = "speaker.wave.1"
+            symbolName = "speaker.wave.1.fill"
         } else if level < 0.67 {
-            symbolName = "speaker.wave.2"
+            symbolName = "speaker.wave.2.fill"
         } else {
-            symbolName = "speaker.wave.3"
+            symbolName = "speaker.wave.3.fill"
         }
 
-        let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: "VolumeHelper")
-        image?.isTemplate = true
+        let isInputMuted = inputLevel <= 0.01
+        let image = statusBarImage(
+            speakerSymbolName: symbolName,
+            showsMutedInput: isInputMuted
+        )
+
+        statusItem.length = isInputMuted ? 64 : NSStatusItem.squareLength
+        image?.isTemplate = !isInputMuted
         statusItem.button?.image = image
-        statusItem.button?.toolTip = "Output Volume: \(percent) %"
+        statusItem.button?.toolTip = isInputMuted
+            ? "Input Muted · Output Volume: \(percent) %"
+            : "Output Volume: \(percent) %"
+    }
+
+    private func statusBarImage(speakerSymbolName: String, showsMutedInput: Bool) -> NSImage? {
+        guard showsMutedInput else {
+            return NSImage(systemSymbolName: speakerSymbolName, accessibilityDescription: "Output Volume")
+        }
+
+        let imageSize = NSSize(width: 54, height: 18)
+        let image = NSImage(size: imageSize)
+        image.lockFocus()
+
+        drawSymbol("microphone.slash.fill", color: .labelColor, in: NSRect(x: 0, y: 0, width: 17, height: 18))
+        drawSymbol(speakerSymbolName, color: .labelColor, in: NSRect(x: 29, y: 0, width: 25, height: 18))
+
+        image.unlockFocus()
+        return image
+    }
+
+    private func drawSymbol(_ symbolName: String, color: NSColor, in rect: NSRect) {
+        guard let symbol = NSImage(systemSymbolName: symbolName, accessibilityDescription: nil) else {
+            return
+        }
+
+        let configuration = NSImage.SymbolConfiguration(pointSize: 15, weight: .regular)
+        let configuredSymbol = symbol.withSymbolConfiguration(configuration) ?? symbol
+        configuredSymbol.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1)
+        color.setFill()
+        rect.fill(using: .sourceAtop)
     }
 
     private func selectDevice(_ deviceID: AudioDeviceID, direction: AudioDirection) {
