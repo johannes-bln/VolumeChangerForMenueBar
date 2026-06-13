@@ -7,7 +7,7 @@ Why? It's more simple and faster in dayli work :)
   <img src="https://img.shields.io/badge/Download-macOS%20App-blue?style=for-the-badge&logo=apple" alt="Download macOS App (Version 1.1)">
 </a>
 <br>
-<img width="629" height="510" alt="image" src="https://github.com/user-attachments/assets/2e592de7-11cf-4ab4-8f81-b07546632299" />
+<img width="476" height="499" alt="image" src="https://github.com/user-attachments/assets/98efcbca-81b2-4305-8019-2707febf6433" />
 
 VolumeHelper is a small macOS menu bar app.
 
