@@ -12,7 +12,7 @@ final class SliderMenuItem: NSMenuItem {
 
         slider.target = self
         slider.action = #selector(valueChanged)
-        slider.isContinuous = false
+        slider.isContinuous = true
         slider.isEnabled = isEnabled
         slider.setAccessibilityLabel(title)
 
