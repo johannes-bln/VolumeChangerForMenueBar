@@ -12,8 +12,9 @@ final class SliderMenuItem: NSMenuItem {
 
         slider.target = self
         slider.action = #selector(valueChanged)
-        slider.isContinuous = true
+        slider.isContinuous = false
         slider.isEnabled = isEnabled
+        slider.setAccessibilityLabel(title)
 
         let row = SliderRowView(title: title, slider: slider, valueLabel: valueLabel)
         view = row
