@@ -6,6 +6,16 @@ final class MenuController: NSObject, NSMenuDelegate {
     private let statusItem: NSStatusItem
     private let menu = NSMenu()
     private var refreshTimer: Timer?
+    private var outputLevel: Float = 0
+    private var inputLevel: Float?
+    private var inputMuted = false
+    private var lastRenderedIconState: StatusIconState?
+
+    private struct StatusIconState: Equatable {
+        let outputPercent: Int
+        let speakerSymbolName: String
+        let inputMuted: Bool
+    }
 
     init(audio: AudioManager) {
         self.audio = audio
@@ -21,7 +31,7 @@ final class MenuController: NSObject, NSMenuDelegate {
         updateIcon()
         rebuildMenu()
 
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+        refreshTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             self?.updateIcon()
         }
     }
@@ -38,20 +48,28 @@ final class MenuController: NSObject, NSMenuDelegate {
     private func rebuildMenu() {
         menu.removeAllItems()
 
-        addDeviceSection(title: "Input", direction: .input)
+        let devices = audio.devices()
+        addDeviceSection(title: "Input", direction: .input, devices: devices)
         menu.addItem(.separator())
-        addDeviceSection(title: "Output", direction: .output)
+        addDeviceSection(title: "Output", direction: .output, devices: devices)
         menu.addItem(.separator())
         addSlider(title: "Input Volume", direction: .input)
         addSlider(title: "Output Volume", direction: .output)
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "About", action: #selector(openAbountWebpage), keyEquivalent: "i", target: self))
+        menu.addItem(NSMenuItem(title: "About", action: #selector(openAboutWebpage), keyEquivalent: "i", target: self))
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q", target: self))
     }
 
-    private func addDeviceSection(title: String, direction: AudioDirection) {
+    private func addDeviceSection(title: String, direction: AudioDirection, devices allDevices: [AudioDevice]) {
         let titleItem = NSMenuItem(title: title, action: nil, keyEquivalent: "")
-        let devices = audio.devices(for: direction)
+        let devices = allDevices.filter { device in
+            switch direction {
+            case .input:
+                return device.hasInput
+            case .output:
+                return device.hasOutput
+            }
+        }
         let selectedDeviceID = audio.defaultDevice(for: direction)
 
         titleItem.isEnabled = false
@@ -79,17 +97,44 @@ final class MenuController: NSObject, NSMenuDelegate {
     private func addSlider(title: String, direction: AudioDirection) {
         let value = audio.volume(for: direction)
         let item = SliderMenuItem(title: title, value: value ?? 0, isEnabled: value != nil) { [weak self] level in
-            self?.audio.setVolume(level, for: direction)
-            self?.updateIcon()
+            guard let self else {
+                return
+            }
+
+            guard self.audio.setVolume(level, for: direction) else {
+                return
+            }
+
+            if direction == .output {
+                self.outputLevel = level
+            } else {
+                self.inputLevel = level
+                self.inputMuted = level <= 0.01
+            }
+            self.renderIcon()
         }
 
         menu.addItem(item)
     }
 
     private func updateIcon() {
-        let level = audio.volume(for: .output) ?? 0
-        let inputLevel = audio.volume(for: .input) ?? 0
+        let outputLevel = audio.volume(for: .output) ?? 0
+        let inputLevel = audio.volume(for: .input)
+        let inputMuted = audio.isMuted(for: .input) ?? (inputLevel.map { $0 <= 0.01 } ?? false)
 
+        guard self.outputLevel != outputLevel || self.inputLevel != inputLevel ||
+                self.inputMuted != inputMuted || lastRenderedIconState == nil else {
+            return
+        }
+
+        self.outputLevel = outputLevel
+        self.inputLevel = inputLevel
+        self.inputMuted = inputMuted
+        renderIcon()
+    }
+
+    private func renderIcon() {
+        let level = outputLevel
         let percent = Int(round(Double(level * 100)))
 
         let symbolName: String
@@ -104,7 +149,17 @@ final class MenuController: NSObject, NSMenuDelegate {
             symbolName = "speaker.wave.3.fill"
         }
 
-        let isInputMuted = inputLevel <= 0.01
+        let isInputMuted = inputMuted
+        let state = StatusIconState(
+            outputPercent: percent,
+            speakerSymbolName: symbolName,
+            inputMuted: isInputMuted
+        )
+        guard lastRenderedIconState != state else {
+            return
+        }
+        lastRenderedIconState = state
+
         let image = statusBarImage(
             speakerSymbolName: symbolName,
             showsMutedInput: isInputMuted
@@ -148,17 +203,18 @@ final class MenuController: NSObject, NSMenuDelegate {
 
     private func selectDevice(_ deviceID: AudioDeviceID, direction: AudioDirection) {
         audio.setDefaultDevice(deviceID, for: direction)
-
-        if direction == .output {
-            updateIcon()
-        }
+        updateIcon()
 
         menu.cancelTracking()
         rebuildMenu()
     }
 
-    @objc private func openAbountWebpage() {
-        NSWorkspace.shared.open(URL(string: "https://github.com/johannes-bln/VolumeChangerForMenueBar")!)
+    @objc private func openAboutWebpage() {
+        guard let url = URL(string: "https://github.com/johannes-bln/VolumeChangerForMenueBar") else {
+            return
+        }
+
+        NSWorkspace.shared.open(url)
     }
     
     @objc private func quit() {

@@ -34,8 +34,14 @@ enum AudioDirection {
 final class AudioManager {
     private let systemObject = AudioObjectID(kAudioObjectSystemObject)
 
+    func devices() -> [AudioDevice] {
+        allDevices().sorted { first, second in
+            first.name.localizedStandardCompare(second.name) == .orderedAscending
+        }
+    }
+
     func devices(for direction: AudioDirection) -> [AudioDevice] {
-        allDevices()
+        devices()
             .filter { device in
                 switch direction {
                 case .input:
@@ -43,9 +49,6 @@ final class AudioManager {
                 case .output:
                     return device.hasOutput
                 }
-            }
-            .sorted { first, second in
-                first.name.localizedStandardCompare(second.name) == .orderedAscending
             }
     }
 
@@ -73,6 +76,14 @@ final class AudioManager {
         return volume(for: deviceID, direction: direction)
     }
 
+    func isMuted(for direction: AudioDirection) -> Bool? {
+        guard let deviceID = defaultDevice(for: direction) else {
+            return nil
+        }
+
+        return isMuted(deviceID, direction: direction)
+    }
+
     @discardableResult
     func setVolume(_ value: Float, for direction: AudioDirection) -> Bool {
         guard let deviceID = defaultDevice(for: direction) else {
@@ -98,8 +109,12 @@ final class AudioManager {
 
         var deviceIDs = [AudioDeviceID](repeating: 0, count: count)
 
-        let status = deviceIDs.withUnsafeMutableBufferPointer { buffer in
-            AudioObjectGetPropertyData(systemObject, &address, 0, nil, &size, buffer.baseAddress!)
+        let status = deviceIDs.withUnsafeMutableBufferPointer { buffer -> OSStatus in
+            guard let baseAddress = buffer.baseAddress else {
+                return kAudioHardwareBadObjectError
+            }
+
+            return AudioObjectGetPropertyData(systemObject, &address, 0, nil, &size, baseAddress)
         }
 
         guard status == noErr else {
@@ -223,7 +238,7 @@ final class AudioManager {
             return nil
         }
 
-        return Float(value)
+        return min(max(Float(value), 0), 1)
     }
 
     private func writeVolume(_ value: Float, deviceID: AudioDeviceID, direction: AudioDirection, element: AudioObjectPropertyElement) -> Bool {
